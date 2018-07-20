@@ -11,6 +11,8 @@ class ChannelAuth
 	public $nonce;
 	public $timestamp;
 	public $channel_key;
+	// Debug Request ID
+	public $request_id;
 }
 
 function CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret)
@@ -22,10 +24,14 @@ function CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access
 	$request->setAppId($app_id);
 	$request->setChannelId($channel_id);
 	$response = $client->getAcsResponse($request);
-	var_dump($response);
 
 	$auth = new ChannelAuth();
-	$auth->$app_id = $app_id;
+	$auth->app_id = $app_id;
+	$auth->channel_id = $channel_id;
+	$auth->channel_key = $response->ChannelKey;
+	$auth->nonce = $response->Nonce;
+	$auth->timestamp = $response->Timestamp;
+	$auth->request_id = $response->RequestId;
 	return $auth;
 }
 
@@ -41,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	die();
 }
 
+header("Content-Type: application/json");
+
 $channel_id = $_REQUEST['room'];
 $user = $_REQUEST['user'];
 $password = $_REQUEST['password'];
@@ -48,19 +56,46 @@ $password = $_REQUEST['password'];
 include_once 'Config.php';
 $channel_url = $app_id . '/' . $channel_id;
 
-if (!isset($GLOBALS['channels'])) {
-	$GLOBALS['channels'] = array();
-}
-$channels = $GLOBALS['channels'];
+function ReadObjects()
+{
+	$file = fopen('db.txt', 'r');
+    if (!$file) {
+    	die('Open file failed');
+    }
 
-if (!isset($channels[$channel_url])) {
+    $filesize = filesize('db.txt');
+    if ($filesize > 0) {
+        $content = fread($file, filesize('db.txt'));
+    }
+    fclose($file);
+
+    if ($filesize > 0) {
+        return json_decode($content);
+    }
+    return (object)[];
+}
+
+function WriteObject($channels)
+{
+	$file = fopen('db.txt', 'w');
+    if (!$file) {
+    	die('Open file failed');
+    }
+
+	$content = json_encode($channels);
+    fwrite($file, $content);
+
+    fclose($file);
+}
+
+$channels = ReadObjects();
+var_dump($channels);
+
+if (!isset($channels->{$channel_url})) {
 	$auth = CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret);
-	$channels[$channel_url] = $auth;
+	$channels->{$channel_url} = $auth;
+	WriteObject($channels);
 } else {
-	$auth = $channels[$channel_url];
+	$auth = $channels->{$channel_url};
 }
-
-header("Content-Type: application/json");
-echo $auth->$app_id;
-
 ?>
