@@ -52,3 +52,5 @@ Mkfile.old
 dkms.conf
 
 .idea
+db.txt
+Config.php
