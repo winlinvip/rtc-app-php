@@ -15,15 +15,19 @@ class ChannelAuth
 	public $request_id;
 }
 
-function BuildToken($channel_id, $channel_key, $app_id, $user_id, $session, $nonce, $timestamp)
+function BuildToken($channel_id, $channel_key,
+	$app_id, $user_id, $session, $nonce, $timestamp)
 {
-	$s = $channel_id . $channel_key . $app_id . $user_id . $session . $nonce . $timestamp;
+	$s = $channel_id . $channel_key . $app_id
+		. $user_id . $session . $nonce . $timestamp;
 	return hash('sha256', $s);
 }
 
-function CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret)
+function CreateChannel($app_id, $channel_id,
+	$region_id, $access_key_id, $access_key_secret)
 {
-	$iClientProfile = DefaultProfile::getProfile($region_id, $access_key_id, $access_key_secret);
+	$iClientProfile = DefaultProfile::getProfile(
+		$region_id, $access_key_id, $access_key_secret);
 	$client = new DefaultAcsClient($iClientProfile);
 
 	$request = new RTC\CreateChannelRequest();
