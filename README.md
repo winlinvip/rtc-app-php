@@ -2,6 +2,13 @@
 
 PHP AppServer for RTC.
 
+For all languages:
+
+* [Python](https://github.com/winlinvip/rtc-app-python).
+* [Java](https://github.com/winlinvip/rtc-app-java).
+* [Golang](https://github.com/winlinvip/rtc-app-golang).
+* [PHP](https://github.com/winlinvip/rtc-app-php).
+
 ## Usage
 
 1. Generate AK from [here](https://usercenter.console.aliyun.com/#/manage/ak):
