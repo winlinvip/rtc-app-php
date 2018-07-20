@@ -15,6 +15,12 @@ class ChannelAuth
 	public $request_id;
 }
 
+function BuildToken($channel_id, $channel_key, $app_id, $user_id, $session, $nonce, $timestamp)
+{
+	$s = $channel_id . $channel_key . $app_id . $user_id . $session . $nonce . $timestamp;
+	return hash('sha256', $s);
+}
+
 function CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret)
 {
 	$iClientProfile = DefaultProfile::getProfile($region_id, $access_key_id, $access_key_secret);
@@ -89,7 +95,6 @@ function WriteObject($channels)
 }
 
 $channels = ReadObjects();
-var_dump($channels);
 
 if (!isset($channels->{$channel_url})) {
 	$auth = CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret);
@@ -98,4 +103,26 @@ if (!isset($channels->{$channel_url})) {
 } else {
 	$auth = $channels->{$channel_url};
 }
+
+$user_id = uniqid();
+$session = uniqid();
+$token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id, $session, $auth->nonce, $auth->timestamp);
+$username = $user_id . '?appid=' . $appid . '&session=' . $session . '&channel=' . $channel_id . '&nonce=' . $nonce . '&timestamp=' . $timestamp;
+
+echo json_encode(array(
+	'code' => 0,
+	'data' => array(
+		'appid' => $app_id,
+		'userid' => $user_id,
+		'gslb' => array($gslb),
+		'session' => $session,
+		'token' => $token,
+		'nonce' => $auth->nonce,
+		'timestamp' => $auth->timestamp,
+		'turn' => array(
+			'username' => $username,
+			'password' => $token
+		)
+	)
+));
 ?>
