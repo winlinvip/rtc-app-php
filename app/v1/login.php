@@ -1,6 +1,6 @@
 <?php
 
-include_once 'aliyun-php-sdk-core/Config.php';
+include_once 'aliyun-openapi-php-sdk/aliyun-php-sdk-core/Config.php';
 Autoloader::addAutoloadPath("aliyun-php-sdk-rtc");
 use rtc\Request\V20180111 as RTC;
 
