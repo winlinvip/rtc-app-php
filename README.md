@@ -17,13 +17,21 @@ AccessKeySecret: 4JaIs4SG4dLwPsQSwGAHzeOQKxO6iw
 AppID: iwo5l81k
 ```
 
-4. Create DB file for php:
+4. Clone SDK:
+
+```
+git clone https://github.com/winlinvip/rtc-app-php.git &&
+cd rtc-app-php/app/v1 &&
+git clone https://github.com/aliyun/aliyun-openapi-php-sdk.git
+```
+
+5. Create DB file for php:
 
 ```
 touch db.txt && chmod 777 db.txt
 ```
 
-5. Create Config.php by your data:
+6. Create Config.php by your data:
 
 ```
 echo "<?php" > Config.php
@@ -38,7 +46,7 @@ echo "?>" >> Config.php
 
 > User can use other DB like MySQL.
 
-6. Verify AppServer by [here](http://localhost:8080/app/v1/login.php?room=5678&user=nvivy&passwd=12345678).
+7. Verify AppServer by [here](http://localhost:8080/app/v1/login.php?room=5678&user=nvivy&passwd=12345678).
 
 > Remark: You can setup client native SDK by `http://30.2.228.19:8080/app/v1`.
 
