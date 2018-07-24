@@ -20,7 +20,8 @@ function BuildToken($channel_id, $channel_key,
 {
 	$s = $channel_id . $channel_key . $app_id
 		. $user_id . $session . $nonce . $timestamp;
-	return hash('sha256', $s);
+	$token = hash('sha256', $s);
+	return $token;
 }
 
 function CreateChannel($app_id, $channel_id,
