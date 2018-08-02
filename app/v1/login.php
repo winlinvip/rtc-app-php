@@ -13,6 +13,7 @@ class ChannelAuth
 	public $channel_key;
 	// Debug Request ID
 	public $request_id;
+	public $recovered;
 }
 
 function BuildToken($channel_id, $channel_key,
@@ -57,6 +58,7 @@ function CreateChannel($app_id, $channel_id,
 	$auth->nonce = $response->Nonce;
 	$auth->timestamp = $response->Timestamp;
 	$auth->request_id = $response->RequestId;
+	$auth->recovered = False;
 	return $auth;
 }
 
@@ -113,12 +115,19 @@ function WriteObject($channels)
     fclose($file);
 }
 
+$starttime = microtime(True);
 $channels = ReadObjects();
 
 if (!isset($channels->{$channel_url})) {
 	$auth = CreateChannel($app_id, $channel_id, $region_id, $endpoint, $access_key_id, $access_key_secret);
 	$channels->{$channel_url} = $auth;
 	WriteObject($channels);
+
+	// By default, write log to /var/log/apache2/error_log
+	$duration = round((microtime(True) - $starttime) * 1000);
+	error_log('CreateChannel requestId=' . $auth->request_id . ', cost='. $duration
+		. 'ms, channelId=' . $auth->channel_id . ', nonce=' . $auth->nonce . ', timestamp=' . $auth->timestamp
+		. ', channelKey=' . $auth->channel_key . ', recovered=' . $auth->recovered);
 } else {
 	$auth = $channels->{$channel_url};
 }
@@ -127,6 +136,11 @@ $user_id = uniqid();
 $session = uniqid();
 $token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id, $session, $auth->nonce, $auth->timestamp);
 $username = $user_id . '?appid=' . $appid . '&session=' . $session . '&channel=' . $channel_id . '&nonce=' . $nonce . '&timestamp=' . $timestamp;
+
+// By default, write log to /var/log/apache2/error_log
+$duration = round((microtime(True) - $starttime) * 1000);
+error_log('Sign cost='. $duration . 'ms, user=' . $user . ', userId=' . $user_id . ', session=' . $session
+	. ', token=' . $token . ', channelKey=' . $channel_key);
 
 echo json_encode(array(
 	'code' => 0,

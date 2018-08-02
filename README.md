@@ -87,7 +87,8 @@ echo "?>" >> Config.php
 
 ## History
 
-* Use HTTP, x3 times faster than HTTPS.
+* Log the request id and cost in ms.
+* [42ab163](https://github.com/winlinvip/rtc-app-php/commit/42ab1635b45d8e9db17c58cc8e1548dd72ea62c7), Use HTTP, x3 times faster than HTTPS.
 * [4d362dc](https://github.com/winlinvip/rtc-app-php/commit/4d362dc5b0898f7348747b2b9245a351e33316c8), Set endpoint to get correct error.
 * Support create channel and sign user token.
 
