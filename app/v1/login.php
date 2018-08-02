@@ -25,7 +25,7 @@ function BuildToken($channel_id, $channel_key,
 }
 
 function CreateChannel($app_id, $channel_id,
-	$region_id, $access_key_id, $access_key_secret)
+	$region_id, $endpoint, $access_key_id, $access_key_secret)
 {
 	$iClientProfile = DefaultProfile::getProfile(
 		$region_id, $access_key_id, $access_key_secret);
@@ -34,6 +34,17 @@ function CreateChannel($app_id, $channel_id,
 	$request = new RTC\CreateChannelRequest();
 	$request->setAppId($app_id);
 	$request->setChannelId($channel_id);
+
+	// Strongly recomment to set the RTC endpoint,
+	// because the exception is not the "right" one if not set.
+	// For example, if access-key-id is invalid:
+	//      1. if endpoint is set, exception is InvalidAccessKeyId.NotFound
+	//      2. if endpoint isn't set, exception is SDK.InvalidRegionId
+	// that's caused by query endpoint failed.
+	// @remark SDk will cache endpoints, however it will query endpoint for the first
+	//      time, so it's good for performance to set the endpoint.
+	DefaultProfile::addEndpoint($region_id, $region_id, $request->getProduct(), $endpoint);
+
 	$response = $client->getAcsResponse($request);
 
 	$auth = new ChannelAuth();
@@ -102,7 +113,7 @@ function WriteObject($channels)
 $channels = ReadObjects();
 
 if (!isset($channels->{$channel_url})) {
-	$auth = CreateChannel($app_id, $channel_id, $region_id, $access_key_id, $access_key_secret);
+	$auth = CreateChannel($app_id, $channel_id, $region_id, $endpoint, $access_key_id, $access_key_secret);
 	$channels->{$channel_url} = $auth;
 	WriteObject($channels);
 } else {
