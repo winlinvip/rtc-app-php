@@ -87,7 +87,7 @@ echo "?>" >> Config.php
 
 ## History
 
-* [30f4d42](https://github.com/winlinvip/rtc-app-php/commit/30f4d42025576878a05ac8319b0b50ac0bafc381), Support recover for some OpenAPI error.
+* [8663717](https://github.com/winlinvip/rtc-app-php/commit/8663717712db79e25bdf237f96b00f1d230aa279), Support recover for some OpenAPI error.
 * [2c0fe60](https://github.com/winlinvip/rtc-app-php/commit/2c0fe60eec1c243427ea2d35a0062b0b256daa6b), Log the request id and cost in ms.
 * [42ab163](https://github.com/winlinvip/rtc-app-php/commit/42ab1635b45d8e9db17c58cc8e1548dd72ea62c7), Use HTTP, x3 times faster than HTTPS.
 * [4d362dc](https://github.com/winlinvip/rtc-app-php/commit/4d362dc5b0898f7348747b2b9245a351e33316c8), Set endpoint to get correct error.
