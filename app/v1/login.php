@@ -45,6 +45,9 @@ function CreateChannel($app_id, $channel_id,
 	//      time, so it's good for performance to set the endpoint.
 	DefaultProfile::addEndpoint($region_id, $region_id, $request->getProduct(), $endpoint);
 
+	// Use HTTP, x3 times faster than HTTPS.
+	$request->setProtocol('http');
+
 	$response = $client->getAcsResponse($request);
 
 	$auth = new ChannelAuth();
