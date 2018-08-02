@@ -73,7 +73,8 @@ function CreateChannel($app_id, $channel_id,
 		// that's caused by query endpoint failed.
 		// @remark SDk will cache endpoints, however it will query endpoint for the first
 		//      time, so it's good for performance to set the endpoint.
-		DefaultProfile::addEndpoint($region_id, $region_id, $request->getProduct(), $endpoint);
+		$product = $request->getProduct();
+		DefaultProfile::addEndpoint($region_id, $region_id, $product, $endpoint);
 
 		// Use HTTP, x3 times faster than HTTPS.
 		$request->setProtocol('http');
