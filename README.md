@@ -87,7 +87,7 @@ echo "?>" >> Config.php
 
 ## History
 
-* Update SessionID generation algorithm.
+* [e190da2](https://github.com/winlinvip/rtc-app-php/commit/e190da238fdbdb8a7f89ff5ca998626194d4ab07), Update SessionID generation algorithm.
 * [8663717](https://github.com/winlinvip/rtc-app-php/commit/8663717712db79e25bdf237f96b00f1d230aa279), Support recover for some OpenAPI error.
 * [2c0fe60](https://github.com/winlinvip/rtc-app-php/commit/2c0fe60eec1c243427ea2d35a0062b0b256daa6b), Log the request id and cost in ms.
 * [42ab163](https://github.com/winlinvip/rtc-app-php/commit/42ab1635b45d8e9db17c58cc8e1548dd72ea62c7), Use HTTP, x3 times faster than HTTPS.
