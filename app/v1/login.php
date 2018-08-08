@@ -95,6 +95,18 @@ function CreateChannel($app_id, $channel_id,
 	}
 }
 
+function CreateUserID()
+{
+	return uniqid();
+}
+
+function CreateSession($app_id, $channel_id, $channel_key, $user_id)
+{
+	$s = $app_id . $channel_id . $channel_key . $user_id . microtime(True);
+	$session = hash('sha256', $s);
+	return $session;
+}
+
 function BuildToken($channel_id, $channel_key,
 	$app_id, $user_id, $session, $nonce, $timestamp)
 {
@@ -179,9 +191,10 @@ if (!isset($channels->{$channel_url})) {
 	$auth = $channels->{$channel_url};
 }
 
-$user_id = uniqid();
-$session = uniqid();
-$token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id, $session, $auth->nonce, $auth->timestamp);
+$user_id = CreateUserID();
+$session = CreateSession($app_id, $channel_id, $channel_key, $user_id);
+$token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id, $session,
+	$auth->nonce, $auth->timestamp);
 $username = $user_id . '?appid=' . $appid . '&session=' . $session . '&channel=' . $channel_id . '&nonce=' . $nonce . '&timestamp=' . $timestamp;
 
 // By default, write log to /var/log/apache2/error_log
