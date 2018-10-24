@@ -100,18 +100,11 @@ function CreateUserID()
 	return uniqid();
 }
 
-function CreateSession($app_id, $channel_id, $channel_key, $user_id)
-{
-	$s = $app_id . $channel_id . $channel_key . $user_id . microtime(True);
-	$session = hash('sha256', $s);
-	return $session;
-}
-
 function BuildToken($channel_id, $channel_key,
-	$app_id, $user_id, $session, $nonce, $timestamp)
+	$app_id, $user_id, $nonce, $timestamp)
 {
 	$s = $channel_id . $channel_key . $app_id
-		. $user_id . $session . $nonce . $timestamp;
+		. $user_id . $nonce . $timestamp;
 	$token = hash('sha256', $s);
 	return $token;
 }
@@ -192,14 +185,13 @@ if (!isset($channels->{$channel_url})) {
 }
 
 $user_id = CreateUserID();
-$session = CreateSession($app_id, $channel_id, $channel_key, $user_id);
-$token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id, $session,
+$token = BuildToken($channel_id, $auth->channel_key, $app_id, $user_id,
 	$auth->nonce, $auth->timestamp);
-$username = $user_id . '?appid=' . $appid . '&session=' . $session . '&channel=' . $channel_id . '&nonce=' . $nonce . '&timestamp=' . $timestamp;
+$username = $user_id . '?appid=' . $appid . '&channel=' . $channel_id . '&nonce=' . $nonce . '&timestamp=' . $timestamp;
 
 // By default, write log to /var/log/apache2/error_log
 $duration = round((microtime(True) - $starttime) * 1000);
-error_log('Sign cost='. $duration . 'ms, user=' . $user . ', userId=' . $user_id . ', session=' . $session
+error_log('Sign cost='. $duration . 'ms, user=' . $user . ', userId=' . $user_id
 	. ', token=' . $token . ', channelKey=' . $channel_key);
 
 echo json_encode(array(
@@ -208,7 +200,6 @@ echo json_encode(array(
 		'appid' => $app_id,
 		'userid' => $user_id,
 		'gslb' => array($gslb),
-		'session' => $session,
 		'token' => $token,
 		'nonce' => $auth->nonce,
 		'timestamp' => $auth->timestamp,
